@@ -24,6 +24,7 @@ if ($session) {
   try {
     $uid = $facebook->getUser();
     $me = $facebook->api('/me');
+    $feed = $facebook->api('/me/feed');
   } catch (FacebookApiException $e) {
     error_log($e);
   }
@@ -43,7 +44,7 @@ $naitik = $facebook->api('/naitik');
 <!doctype html>
 <html xmlns:fb="http://www.facebook.com/2008/fbml">
   <head>
-    <title>php-sdk</title>
+    <title>Social Study App</title>
     <style>
       body {
         font-family: 'Lucida Grande', Verdana, Arial, sans-serif;
@@ -72,6 +73,8 @@ $naitik = $facebook->api('/naitik');
           cookie  : true, // enable cookies to allow the server to access the session
           xfbml   : true // parse XFBML
         });
+        
+ 
 
         // whenever the user logs in, we refresh the page
         FB.Event.subscribe('auth.login', function() {
@@ -86,6 +89,11 @@ $naitik = $facebook->api('/naitik');
         document.getElementById('fb-root').appendChild(e);
       }());
     </script>
+    
+        <fb:login-button perms="read_stream">
+        	LOGIN TEST
+        </fb:login-button>
+    
 
 
     <h1><a href="example.php">php-sdk</a></h1>
@@ -110,15 +118,25 @@ $naitik = $facebook->api('/naitik');
     <?php if ($me): ?>
     <pre><?php print_r($session); ?></pre>
 
+
     <h3>You</h3>
     <img src="https://graph.facebook.com/<?php echo $uid; ?>/picture">
     <?php echo $me['name']; ?>
 
     <h3>Your User Object</h3>
     <pre><?php print_r($me); ?></pre>
+    <pre><?php  ?>
+    <?php else: ?>
+    <strong><em>You are not Connected.</em></strong>    
+    <?php endif ?>
+    
+    <h3>TESTING</h3>
+    <?php if ($feed): ?>
+    <pre><?php print_r($feed); ?></pre>
     <?php else: ?>
     <strong><em>You are not Connected.</em></strong>
     <?php endif ?>
+    
 
   </body>
 </html>
