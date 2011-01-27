@@ -1,11 +1,11 @@
 <?php
 
-require '../src/facebook.php';
+require 'facebook-php-sdk/src/facebook.php';
 
 // Create our Application instance (replace this with your appId and secret).
 $facebook = new Facebook(array(
-  'appId' => '117743971608120',
-  'secret' => '943716006e74d9b9283d4d5d8ab93204',
+  'appId'  => '192979600719639',
+  'secret' => '9c11b647c19ac69732345d6f72954121',
   'cookie' => true,
 ));
 
@@ -24,6 +24,7 @@ if ($session) {
   try {
     $uid = $facebook->getUser();
     $me = $facebook->api('/me');
+    $feed = $facebook->api('/me/feed');
   } catch (FacebookApiException $e) {
     error_log($e);
   }
@@ -74,54 +75,47 @@ xfbml : true // parse XFBML
 });
 
 // whenever the user logs in, we refresh the page
-FB.Event.subscribe('auth.login', function() {
-window.location.reload();
-});
-};
+	FB.Event.subscribe('auth.login', function() {
+		window.location.reload();
+		});
+	};
 
-(function() {
-var e = document.createElement('script');
-e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-e.async = true;
-document.getElementById('fb-root').appendChild(e);
-}());
+	(function() {
+		var e = document.createElement('script');
+		e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+		e.async = true;
+		document.getElementById('fb-root').appendChild(e);
+	}());
 </script>
 
+	<?php if ($me and !$feed): ?>
+	<h1>To participate study, click the button below and then click 'ALLOW' </h1>  
+   	<fb:login-button perms="read_stream">
+       	Continue
+   	</fb:login-button>
+	<?php endif ?>
 
-<h1><a href="example.php">php-sdk</a></h1>
+	<?php if ($me): ?>
+		<a href="<?php echo $logoutUrl; ?>">
+		<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
+		</a>
+	<?php else: ?>
+	<h2> Welcome to Comm 168 Social Studies Research Application </h2>
+	<h3>To participate study, login and then click 'ALLOW' </h3>
+		<div>
+			Login Here: <fb:login-button perms="read_stream"></fb:login-button>
+		</div>
+	<?php endif ?>
 
-<?php if ($me): ?>
-<a href="<?php echo $logoutUrl; ?>">
-<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
-</a>
-<?php else: ?>
-<div>
-Using JavaScript &amp; XFBML: <fb:login-button></fb:login-button>
-</div>
-<div>
-Without using JavaScript &amp; XFBML:
-<a href="<?php echo $loginUrl; ?>">
-<img src="http://static.ak.fbcdn.net/rsrc.php/zB6N8/hash/4li2k73z.gif">
-</a>
-</div>
-<?php endif ?>
+	<?php if ($me): ?>
+	    <?php if ($feed): ?>
+	    		<h3>Thank you for participating, <?php echo $me['first_name']; ?>! <br></br>
+				<?php echo $me['first_name']; ?>'s newsfeed: </h3>
+	    		<pre><?php print_r($feed); ?></pre>
+	    <?php else: ?>
+	    		<strong><em>You are not Connected.</em></strong>
+	    <?php endif ?>
+	<?php endif ?>
 
-<h3>Session</h3>
-<?php if ($me): ?>
-<pre><?php print_r($session); ?></pre>
-
-<h3>You</h3>
-<img src="https://graph.facebook.com/<?php echo $uid; ?>/picture">
-<?php echo $me['name']; ?>
-
-<h3>Your User Object</h3>
-<pre><?php print_r($me); ?></pre>
-<?php else: ?>
-<strong><em>You are not Connected.</em></strong>
-<?php endif ?>
-
-<h3>Naitik</h3>
-<img src="https://graph.facebook.com/naitik/picture">
-<?php echo $naitik['name']; ?>
 </body>
 </html>
