@@ -73,21 +73,7 @@ $naitik = $facebook->api('/naitik');
           cookie  : true, // enable cookies to allow the server to access the session
           xfbml   : true // parse XFBML
         });
-      
-	//<?php if ($me): ?>
-      (function() {
-        var e = document.createElement('script');
-        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-        e.async = true;
-        document.getElementById('fb-root').appendChild(e);
-      }());
-    </script>
-  
-	<h2>To participate in this study, click the button below and then click 'ALLOW' </h2>  
-        <fb:login-button perms="read_stream">
-        	Continue
-        </fb:login-button>
-	//<?php endif ?>  
+        
  
 
         // whenever the user logs in, we refresh the page
@@ -95,6 +81,22 @@ $naitik = $facebook->api('/naitik');
           window.location.reload();
         });
       };
+
+      (function() {
+        var e = document.createElement('script');
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
+    
+        <fb:login-button perms="read_stream">
+        	LOGIN TEST
+        </fb:login-button>
+    
+
+
+    <h1><a href="example.php">php-sdk</a></h1>
 
     <?php if ($me): ?>
     <a href="<?php echo $logoutUrl; ?>">
@@ -112,14 +114,37 @@ $naitik = $facebook->api('/naitik');
     </div>
     <?php endif ?>
 
+    <h3>Session</h3>
+    <?php if ($me): ?>
+    <pre><?php print_r($session); ?></pre>
 
-    <h3>Your Facebook Feed</h3>
+
+    <h3>You</h3>
+    <img src="https://graph.facebook.com/<?php echo $uid; ?>/picture">
+    <?php echo $me['name']; ?>
+
+    <h3>Your User Object</h3>
+    <pre><?php print_r($me); ?></pre>
+    <pre><?php  ?>
+    <?php else: ?>
+    <strong><em>You are not Connected.</em></strong>    
+    <?php endif ?>
+    
+    <h3>TESTING</h3>
     <?php if ($feed): ?>
     <pre><?php print_r($feed); ?></pre>
     <?php else: ?>
     <strong><em>You are not Connected.</em></strong>
     <?php endif ?>
     
-
+    <?php
+    /* 
+    	$curl = curl_init();
+    	curl_setopt ($curl, CURLOPT_URL, "https://api.facebook.com/method/fql.query?query=$query");
+    	curl_exec ($curl);
+    	curl_close ($curl);
+   	*/
+    ?>
+    
   </body>
 </html>
