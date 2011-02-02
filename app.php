@@ -25,6 +25,14 @@ if ($session) {
     $uid = $facebook->getUser();
     $me = $facebook->api('/me');
     $feed = $facebook->api('/me/feed');
+    
+    //$query = "SELECT name FROM user WHERE uid = me()";
+    $data = $facebook->api(array('method'=>'fql.query', 'format'=>'JSON', 'query'=>'SELECT message, time FROM status WHERE uid = me()'));
+    //599011492
+     
+    //$data = $facebook->api(array('method'=>'fql.query', 'query'=>'SELECT text FROM comment WHERE postid = 1200943_10100205487697813'));
+    //$data = $facebook->api('/search?q=1200943&type=user');
+    
   } catch (FacebookApiException $e) {
     error_log($e);
   }
@@ -44,7 +52,7 @@ $naitik = $facebook->api('/naitik');
 <!doctype html>
 <html xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-<title>php-sdk</title>
+<title>Social Study</title>
 <style>
 body {
 font-family: 'Lucida Grande', Verdana, Arial, sans-serif;
@@ -110,8 +118,27 @@ xfbml : true // parse XFBML
 	<?php if ($me): ?>
 	    <?php if ($feed): ?>
 	    		<h3>Thank you for participating, <?php echo $me['first_name']; ?>! <br></br>
-				<?php echo $me['first_name']; ?>'s newsfeed: </h3>
-	    		<pre><?php print_r($feed); ?></pre>
+				
+				<?php /*echo $me['first_name']; ?>'s newsfeed:*/ </h3>
+				<pre><?php print_r($data)?></pre>
+				
+				<?php //write to a file
+				$myFile = "id".$me['id'].".txt";
+				$fh = fopen($myFile, 'w') or die("can't open file");
+				
+				echo "Status Updates Found: ".sizeof($data);
+				for ($i=0; $i<sizeof($data); $i++){
+					$temp = $data[$i][message]."\t".date("r",$data[$i][time])."\n";
+					//echo $temp;
+					fwrite($fh, $temp);
+				}
+				
+				fclose($fh);
+								
+				?>
+				
+				
+	    		<pre><?php /*print_r($feed);*/ ?></pre>
 	    <?php else: ?>
 	    		<strong><em>You are not Connected.</em></strong>
 	    <?php endif ?>
