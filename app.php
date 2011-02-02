@@ -119,7 +119,7 @@ xfbml : true // parse XFBML
 	    <?php if ($feed): ?>
 	    		<h3>Thank you for participating, <?php echo $me['first_name']; ?>! <br></br>
 				
-				<?php /*echo $me['first_name']; ?>'s newsfeed:*/ </h3>
+				<?php echo $me['first_name']; ?>'s newsfeed: </h3>
 				<pre><?php print_r($data)?></pre>
 				
 				<?php //write to a file
