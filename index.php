@@ -24,14 +24,8 @@ if ($session) {
   try {
     $uid = $facebook->getUser();
     $me = $facebook->api('/me');
-    $feed = $facebook->api('/me/feed');
-    
-    //$query = "SELECT name FROM user WHERE uid = me()";
+    $feed = $facebook->api('/me/feed');  
     $data = $facebook->api(array('method'=>'fql.query', 'format'=>'JSON', 'query'=>'SELECT message, time FROM status WHERE uid = me()'));
-    //599011492
-     
-    //$data = $facebook->api(array('method'=>'fql.query', 'query'=>'SELECT text FROM comment WHERE postid = 1200943_10100205487697813'));
-    //$data = $facebook->api('/search?q=1200943&type=user');
     
   } catch (FacebookApiException $e) {
     error_log($e);
@@ -44,9 +38,6 @@ if ($me) {
 } else {
   $loginUrl = $facebook->getLoginUrl();
 }
-
-// This call will always work since we are fetching public data.
-$naitik = $facebook->api('/naitik');
 
 ?>
 <!doctype html>
@@ -94,51 +85,77 @@ xfbml : true // parse XFBML
 		e.async = true;
 		document.getElementById('fb-root').appendChild(e);
 	}());
+	
 </script>
 
-	<?php if ($me and !$feed): ?>
-	<h1>To participate study, click the button below and then click 'ALLOW' </h1>  
-   	<fb:login-button perms="read_stream">
-       	Continue
-   	</fb:login-button>
-	<?php endif ?>
-
-	<?php if ($me): ?>
-		<a href="<?php echo $logoutUrl; ?>">
-		<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
-		</a>
-	<?php else: ?>
 	<h2> Welcome to Comm 168 Social Studies Research Application </h2>
-	<h3>To participate study, login and then click 'ALLOW' </h3>
+	
+	<?php if ($me): ?>
+	
+
+		
+	<?php elseif ($session /* FIGURE OUT LOGIN STATUS */): ?>	
+		<?php if (!$feed): ?>
+			<h3>To participate in this study, click the button below and then click 'ALLOW' </h3>
+			<div>
+       			Give Permissions: <fb:login-button perms="read_stream">Allow</fb:login-button>
+       		</div>
+       	<?php endif ?>
+	
+	<?php else: ?>
+		<h3>To participate in this study, login and then click 'ALLOW' </h3>
 		<div>
-			Login Here: <fb:login-button perms="read_stream"></fb:login-button>
+			Login Here: <fb:login-button perms="read_stream">Login</fb:login-button>
 		</div>
 	<?php endif ?>
 
 	<?php if ($me): ?>
 	    <?php if ($feed): ?>
-	    		<h3>Thank you for participating, <?php echo $me['first_name']; ?>! <br></br>
+	    
+	    		<script>
+	    			//whenever participant id changes, we get new result
+	    			function getID(partid){
+	    				var y = document.getElementByID(partid).value
+	    			}
+	    			
+	    		</script>
+	    
 				
-				<?php echo $me['first_name']; ?>'s newsfeed: </h3>
-				<pre><?php print_r($data)?></pre>
+				<!-- Use javascript to get participant ID number -->
+				Enter your participant ID: <input type="text" id="partid" onchange="getID(this.id)" />
+				</br></br>
+				
 				
 				<?php //write to a file
 				$myFile = "id".$me['id'].".txt";
 				$fh = fopen($myFile, 'w') or die("can't open file");
 				
-				echo "Status Updates Found: ".sizeof($data);
+				//echo "Status Updates Found: ".sizeof($data);
 				for ($i=0; $i<sizeof($data); $i++){
-					$temp = $data[$i][message]."\t".date("r",$data[$i][time])."\n";
-					//echo $temp;
+					$temp = $data[$i][message];
+					//include date in the output:
+					//$temp = $data[$i][message]."\t".date("r",$data[$i][time])."\n";
+					
 					fwrite($fh, $temp);
 				}
 				
-				fclose($fh);
-								
+				fclose($fh);				
 				?>
 				
+				<!--BEGIN QUALTRICS SURVEY-->
+				<iframe src="https://stanforduniversity.qualtrics.com/SE/?SID=SV_6g5c0MzG1XpEg9S" width=700 height=500>
+					<a target="_blank" title="Survey Software" href="http://www.qualtrics.com/survey-software/">Survey Software</a><br/>
+					<a target="_blank" title="Enterprise Feedback Management" href="http://www.qualtrics.com/solutions/enterprise-feedback-management/">Enterprise Feedback Management</a><br/>
+					<a target="_blank" href="https://stanforduniversity.qualtrics.com/SE/?SID=SV_6g5c0MzG1XpEg9S">Please click on this link to take the survey</a><br/>
+				</iframe>
+				<!--END QUALTRICS SURVEY-->
 				
-	    		<pre><?php /*print_r($feed);*/ ?></pre>
+				<h3>Thank you for participating! <br></br></h3>
+				Please log out: <a href="<?php echo $logoutUrl; ?>">
+		<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
+		</a>
+				
+				
 	    <?php else: ?>
 	    		<strong><em>You are not Connected.</em></strong>
 	    <?php endif ?>
