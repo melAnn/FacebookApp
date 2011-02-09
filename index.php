@@ -92,54 +92,51 @@ xfbml : true // parse XFBML
 	
 	<?php if ($me): ?>
 	
-
-		
-	<?php elseif ($session /* FIGURE OUT LOGIN STATUS */): ?>	
-		<?php if (!$feed): ?>
-			<h3>To participate in this study, click the button below and then click 'ALLOW' </h3>
-			<div>
-       			Give Permissions: <fb:login-button perms="read_stream">Allow</fb:login-button>
-       		</div>
-       	<?php endif ?>
-	
 	<?php else: ?>
-		<h3>To participate in this study, login and then click 'ALLOW' </h3>
+		<h3>To participate in this study, click the button below, login (if necessary) and activate the application by clicking 'ALLOW' </h3>
 		<div>
-			Login Here: <fb:login-button perms="read_stream">Login</fb:login-button>
+			<fb:login-button perms="read_stream">Activate Study</fb:login-button>
 		</div>
 	<?php endif ?>
 
 	<?php if ($me): ?>
 	    <?php if ($feed): ?>
-	    
-	    		<script>
-	    			//whenever participant id changes, we get new result
-	    			function getID(partid){
-	    				var y = document.getElementByID(partid).value
-	    			}
-	    			
-	    		</script>
-	    
-				
-				<!-- Use javascript to get participant ID number -->
-				Enter your participant ID: <input type="text" id="partid" onchange="getID(this.id)" />
+	    		
+	    		<?php 
+	    			//get participant ID, if saved
+	    			$pid = $_REQUEST['partid'];
+	    			//echo $pid
+	    		?>
+	    		
+	    		
+				<!-- Send form back to the page -->
+				<form action="." method="post">
+					Enter your participant ID: 
+					<input type="text" name="partid" value="<?=$pid ?>" />
+					<input type="submit" value="Save" />
+				</form>
 				</br></br>
 				
 				
 				<?php //write to a file
-				$myFile = "id".$me['id'].".txt";
-				$fh = fopen($myFile, 'w') or die("can't open file");
+				//$myFile = "id".$me['id'].".txt";
 				
-				//echo "Status Updates Found: ".sizeof($data);
-				for ($i=0; $i<sizeof($data); $i++){
-					$temp = $data[$i][message];
-					//include date in the output:
-					//$temp = $data[$i][message]."\t".date("r",$data[$i][time])."\n";
+				if ($pid) {	
+					$myFile = "pid".$pid.".txt";
 					
-					fwrite($fh, $temp);
-				}
-				
-				fclose($fh);				
+					$fh = fopen($myFile, 'w') or die("can't open file");
+					
+					//echo "Status Updates Found: ".sizeof($data);
+					for ($i=0; $i<sizeof($data); $i++){
+						$temp = $data[$i][message]."\n";
+						//include date in the output:
+						//$temp = $data[$i][message]."\t".date("r",$data[$i][time])."\n";
+						
+						fwrite($fh, $temp);
+					}
+					
+					fclose($fh);
+				}			
 				?>
 				
 				<!--BEGIN QUALTRICS SURVEY-->
@@ -150,10 +147,11 @@ xfbml : true // parse XFBML
 				</iframe>
 				<!--END QUALTRICS SURVEY-->
 				
+				
 				<h3>Thank you for participating! <br></br></h3>
 				Please log out: <a href="<?php echo $logoutUrl; ?>">
-		<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
-		</a>
+					<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
+					</a>
 				
 				
 	    <?php else: ?>
