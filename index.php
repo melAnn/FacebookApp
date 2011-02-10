@@ -148,10 +148,9 @@ xfbml : true // parse XFBML
 				<!--END QUALTRICS SURVEY-->
 				
 				
-				<h3>Thank you for participating! <br></br></h3>
-				Please log out: <a href="<?php echo $logoutUrl; ?>">
-					<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
-					</a>
+				<h3>Thank you for participating! Click here to complete study:  <a href="<?php echo $logoutUrl; ?>">
+					<fb:login-button>Finish</fb:login-button>
+					</a></h3>
 				
 				
 	    <?php else: ?>
