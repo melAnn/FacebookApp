@@ -115,7 +115,9 @@ xfbml : true // parse XFBML
 					<input type="text" name="partid" value="<?=$pid ?>" />
 					<input type="submit" value="Save" />
 				</form>
-				</br></br>
+				</br>
+				
+				<p>Please take the survey below.  When you get to the end of the survey, please make sure to scroll all the way to the right and click on the  (>>)  arrow to submit the survey.
 				
 				
 				<?php //write to a file
@@ -139,18 +141,20 @@ xfbml : true // parse XFBML
 				}			
 				?>
 				
+
 				<!--BEGIN QUALTRICS SURVEY-->
-				<iframe src="https://stanforduniversity.qualtrics.com/SE/?SID=SV_6xL2jmFt1zVaE2o&Preview=Survey&BrandID=stanforduniversity" width=700 height=500>
-					<a target="_blank" title="Survey Software" href="http://www.qualtrics.com/survey-software/">Survey Software</a><br/>
-					<a target="_blank" title="Enterprise Feedback Management" href="http://www.qualtrics.com/solutions/enterprise-feedback-management/">Enterprise Feedback Management</a><br/>
-					<a target="_blank" href="https://stanforduniversity.qualtrics.com/SE/?SID=SV_6g5c0MzG1XpEg9S">Please click on this link to take the survey</a><br/>
-				</iframe>
+					<iframe src="https://stanforduniversity.qualtrics.com/SE/?SID=SV_6xL2jmFt1zVaE2o" width=900 height=600>
+					<a target="_blank" title="Survey Software" href="http://www.qualtrics.com/survey-software/">Survey Software</a><br/><a target="_blank" title="Enterprise Feedback Management" href="http://www.qualtrics.com/solutions/enterprise-feedback-management/">Enterprise Feedback Management</a><br/>
+					<a target="_blank" href="https://stanforduniversity.qualtrics.com/SE/?SID=SV_6xL2jmFt1zVaE2o">Please click on this link to take the survey</a><br/>
+					</iframe>
 				<!--END QUALTRICS SURVEY-->
+
 				
 				
-				<h3>Thank you for participating! Click here to complete study:  <a href="<?php echo $logoutUrl; ?>">
+				<h3>Thank you for participating! Make sure you have submitted the survey above by scrolling to the right and clicking the  (>>)  arrow.  Click here to logout of the application and complete the study:  <a href="<?php echo $logoutUrl; ?>">
 					<fb:login-button>Finish</fb:login-button>
 					</a></h3>
+				</br></br>
 				
 				
 	    <?php else: ?>
