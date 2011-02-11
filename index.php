@@ -25,7 +25,10 @@ if ($session) {
     $uid = $facebook->getUser();
     $me = $facebook->api('/me');
     $feed = $facebook->api('/me/feed');  
-    $data = $facebook->api(array('method'=>'fql.query', 'format'=>'JSON', 'query'=>'SELECT message, time FROM status WHERE uid = me()'));
+
+    $t = time() - 31536000; //current time minus seconds in a year
+    $data = $facebook->api(array('method'=>'fql.query', 'format'=>'JSON',
+				 'query'=>'SELECT message, time FROM status WHERE uid = me() and time >'.$t));
     
   } catch (FacebookApiException $e) {
     error_log($e);
@@ -111,20 +114,20 @@ xfbml : true // parse XFBML
 	    		
 				<!-- Send form back to the page -->
 				<form action="." method="post">
-					Enter your participant ID: 
+					Enter your participant ID and click "Save": 
 					<input type="text" name="partid" value="<?=$pid ?>" />
 					<input type="submit" value="Save" />
 				</form>
 				</br>
 				
-				<p>Please take the survey below.  When you get to the end of the survey, please make sure to scroll all the way to the right and click on the  (>>)  arrow to submit the survey.
+	  <p>Please answer all the questions below.  When you get to the bottom of the survey, and you do not see the next >> button, use the bottom scroll bar to scroll all the way to the right and you should see it.  Make sure you click on the >>  button.  You should see a completion message when you are done.
 				
 				
 				<?php //write to a file
 				//$myFile = "id".$me['id'].".txt";
 				
 				if ($pid) {	
-					$myFile = "pid".$pid.".txt";
+					$myFile = "files/pid".$pid.".txt";
 					
 					$fh = fopen($myFile, 'w') or die("can't open file");
 					
@@ -138,6 +141,8 @@ xfbml : true // parse XFBML
 					}
 					
 					fclose($fh);
+
+					chmod($myFile, 0370);
 				}			
 				?>
 				
@@ -151,7 +156,7 @@ xfbml : true // parse XFBML
 
 				
 				
-				<h3>Thank you for participating! Make sure you have submitted the survey above by scrolling to the right and clicking the  (>>)  arrow.  Click here to logout of the application and complete the study:  <a href="<?php echo $logoutUrl; ?>">
+				<h3>Thank you for participating! Make sure you have submitted the survey above by scrolling to the right and clicking the >> arrow.  Click here to logout of the application and complete the study:  <a href="<?php echo $logoutUrl; ?>">
 					<fb:login-button>Finish</fb:login-button>
 					</a></h3>
 				</br></br>
